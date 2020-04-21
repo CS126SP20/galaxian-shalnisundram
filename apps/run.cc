@@ -25,6 +25,6 @@ void SetUp(App::Settings* settings) {
 
 
 // This is a macro that runs the application.
-CINDER_APP(myapp::MyApp,
-           RendererGl(RendererGl::Options().msaa(myapp::kSamples)),
-           myapp::SetUp)
+//CINDER_APP(myapp::MyApp,
+//           RendererGl(RendererGl::Options().msaa(myapp::kSamples)),
+//           myapp::SetUp)
