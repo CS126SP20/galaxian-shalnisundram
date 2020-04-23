@@ -24,6 +24,8 @@ void SetUp(App::Settings* settings) {
 }  // namespace myapp
 
 
+
+
 // This is a macro that runs the application.
 //CINDER_APP(myapp::MyApp,
 //           RendererGl(RendererGl::Options().msaa(myapp::kSamples)),

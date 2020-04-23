@@ -3,6 +3,7 @@
 #include "my_app.h"
 
 #include <cinder/app/App.h>
+#include <cinder/gl/gl.h>
 
 
 namespace myapp {
@@ -18,5 +19,9 @@ void MyApp::update() { }
 void MyApp::draw() { }
 
 void MyApp::keyDown(KeyEvent event) { }
+
+void MyApp::DrawGun() {
+
+}
 
 }  // namespace myapp

@@ -20,7 +20,7 @@ class BasicSampleApp : public App {
  public:
   static void prepareSettings(Settings *settings);
   void setup() override;
-  void mouseDown( MouseEvent event ) override;
+  void mouseDown(MouseEvent event) override;
   void update() override;
   void draw() override;
   void keyDown(KeyEvent event) override;
@@ -40,12 +40,11 @@ class BasicSampleApp : public App {
   ci::ColorA mCol;
   void onButtonPress();
 
-  std::vector<std::string>    mStringList;
-  int                         mStringChoice = 0;
+  std::vector<std::string> mStringList;
+  int mStringChoice = 0;
 };
 
-void BasicSampleApp::setup()
-{
+void BasicSampleApp::setup() {
   Rand::randomize();
 
   time = 0;
@@ -61,7 +60,7 @@ void BasicSampleApp::setup()
   gui = pretzel::PretzelGui::create("Circle settings");
 
   // Sliders can take ints, float, vec2, and vec3
-  gui->addSlider("Position", &mPosition, vec2(0,0), getWindowSize());
+  gui->addSlider("Position", &mPosition, vec2(0, 0), getWindowSize());
   gui->addLabel("Other Settings");
   gui->addButton("Random Color", &BasicSampleApp::onButtonPress, this);
   gui->addToggle("Draw outline", &bDrawOutline);
@@ -79,49 +78,45 @@ void BasicSampleApp::setup()
 
   gui->addSaveLoad();
 
-  gui->loadSettings();    // load the last saved settings automatically
+  gui->loadSettings();  // load the last saved settings automatically
 
   //	gui->minimize();        // start in a minimized mode (same as double-clicking the top bar)
 
   ci::gl::enableAlphaBlending();
 }
 
-void BasicSampleApp::keyDown(KeyEvent event)
-{
-  if (event.getChar() == 'g'){
-    gui->toggleVisible();	// gui interaction will be disabled when invisible
+void BasicSampleApp::keyDown(KeyEvent event) {
+  if (event.getChar() == 'g') {
+    gui->toggleVisible();  // gui interaction will be disabled when invisible
   }
 }
 
-void BasicSampleApp::mouseDown( MouseEvent event )
-{
+void BasicSampleApp::mouseDown(MouseEvent event) {}
+
+void BasicSampleApp::onButtonPress() {
+  mCol =
+      ColorA(Rand::randFloat(), Rand::randFloat(), Rand::randFloat(), mOpacity);
 }
 
-void BasicSampleApp::onButtonPress()
-{
-  mCol = ColorA(Rand::randFloat(), Rand::randFloat(), Rand::randFloat(), mOpacity);
-}
-
-void BasicSampleApp::update()
-{
+void BasicSampleApp::update() {
   time += .1;
   mFps = toString((int)getAverageFps());
 }
 
-void BasicSampleApp::draw()
-{
+void BasicSampleApp::draw() {
   gl::clear(Color(84. / 255., 166. / 255., 1));
 
   mCol.a = mOpacity;
 
   gl::color(mCol);
 
-  if (bDrawOutline){
+  if (bDrawOutline) {
     gl::drawStrokedCircle(mPosition + sin(time) * 7, mRadius);
-  }else {
+  } else {
     gl::drawSolidCircle(mPosition + sin(time) * 7, mRadius);
   }
-  gl::drawString("< " + mBubble, mPosition + vec2(mRadius + 10, -10), mCol, Font("Arial", 24));
+  gl::drawString("< " + mBubble, mPosition + vec2(mRadius + 10, -10), mCol,
+                 Font("Arial", 24));
 
   gui->draw();
 }
@@ -131,4 +126,6 @@ CINDER_APP(BasicSampleApp, RendererGl, [](App::Settings* settings){
   settings->setFrameRate(60.0f);
 //	settings->setHighDensityDisplayEnabled();
 })
+
+
 
