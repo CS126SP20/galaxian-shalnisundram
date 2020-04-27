@@ -26,6 +26,11 @@ std::vector<Enemy> GameEngine::GetAllEnemies() {
   const Color red_color = Color::hex(0xFF0000);
   Enemy first_enemy(top_left_pos, red_color);
   all_enemies.push_back(first_enemy);
+  for (int i = 0; i < 10; i++) {
+    top_left_pos.x = i;
+    Enemy new_enemy(top_left_pos, red_color);
+    all_enemies.push_back(new_enemy);
+  }
   return all_enemies;
 }
 

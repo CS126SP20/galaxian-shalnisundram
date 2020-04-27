@@ -129,7 +129,7 @@ void BasicSampleApp::update() {
   medSpeed += .7;
   hardSpeed += 1;
   if (bMakeEasy) {
-    mTopLeftCornerPos.x += 0.3;
+    mTopLeftCornerPos.x += 1;
   } else if (bMakeMed) {
     mTopLeftCornerPos.x += 3;
   } else if (bMakeHard) {
@@ -139,9 +139,15 @@ void BasicSampleApp::update() {
 }
 
 void BasicSampleApp::draw() {
+  
   gl::clear(Color(84. / 255., 166. / 255., 1));
 
   mCol.a = mOpacity;
+
+  // Draw Gun
+  gl::drawSolidRect(Rectf((getWindowWidth() * .5) - 35,getWindowHeight() - 50,(getWindowWidth()*0.5) + 150, getWindowHeight()));
+  gl::drawSolidRect(Rectf((getWindowWidth() * .5) - 25, getWindowHeight() - 80, (getWindowWidth() * 0.5) + 140, getWindowHeight() - 50));
+  gl::drawSolidRect(Rectf((getWindowWidth()*.5) + 30, getWindowHeight() - 160, (getWindowWidth() * 0.5) + 80, getWindowHeight()-80));
 
   gl::color(mCol);
  // loop over enemies and draw enemy
