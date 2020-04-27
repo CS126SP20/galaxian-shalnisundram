@@ -5,17 +5,28 @@
 #ifndef FINALPROJECT_ENEMY_H
 #define FINALPROJECT_ENEMY_H
 
+#include "cinder/app/App.h"
+
+#include "pretzel/PretzelGui.h"
+
+using namespace ci;
+using namespace ci::app;
+using namespace std;
+
+
 namespace shooter {
 
-class Enemy() {
+class Enemy {
+
+ private:
+  vec2 enemy_position_;
+  Color enemy_color_;
+
  public:
-  Enemy(const Location&);
-
-  Location GetLocation();
-
-  private Location location_;
-
-}
+  Enemy(vec2 position, Color color);
+  vec2 GetEnemyPosition();
+  Color GetEnemyColor();
+};
 
 
 }

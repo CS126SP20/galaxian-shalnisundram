@@ -9,6 +9,9 @@
 #include "cinder/gl/gl.h"
 #include "cinder/Rand.h"
 #include "cinder/CinderMath.h"
+#include "shooter/enemy.h"
+#include "shooter/game_engine.h"
+#include <algorithm>
 
 #include "pretzel/PretzelGui.h"
 
@@ -26,14 +29,26 @@ class BasicSampleApp : public App {
   void keyDown(KeyEvent event) override;
 
   pretzel::PretzelGuiRef gui;
+
+  shooter::GameEngine game_engine_;
   float mRadius;
+  float easyRadius;
+  float medRadius;
+  float hardRadius;
   float mOpacity;
   float time;
+  float easySpeed;
+  float medSpeed;
+  float hardSpeed;
 
+  vec2 mTopLeftCornerPos;
   vec2 mPosition;
   vec3 mVec3;
 
   bool bDrawOutline;
+  bool bMakeEasy;
+  bool bMakeMed;
+  bool bMakeHard;
   string mFps;
   string mBubble;
 
@@ -48,9 +63,16 @@ void BasicSampleApp::setup() {
   Rand::randomize();
 
   time = 0;
+  easySpeed = 0;
+  medSpeed = 0;
+  hardSpeed = 0;
   mRadius = 25;
+  easyRadius = 25;
+  medRadius = 10;
+  hardRadius = 5;
   mOpacity = 0.75;
   mPosition = getWindowCenter();
+  mTopLeftCornerPos = getWindowPos();
   bDrawOutline = false;
   mCol = Color::white();
   mBubble = "Hello, world!";
@@ -64,6 +86,9 @@ void BasicSampleApp::setup() {
   gui->addLabel("Other Settings");
   gui->addButton("Random Color", &BasicSampleApp::onButtonPress, this);
   gui->addToggle("Draw outline", &bDrawOutline);
+  gui->addToggle("Easy", &bMakeEasy);
+  gui->addToggle("Medium", &bMakeMed);
+  gui->addToggle("Hard", &bMakeHard);
   gui->addColorPicker("Circle Color", &mCol);
 
   // Passing floats will keep your sliders as floats
@@ -100,6 +125,16 @@ void BasicSampleApp::onButtonPress() {
 
 void BasicSampleApp::update() {
   time += .1;
+  easySpeed += .3;
+  medSpeed += .7;
+  hardSpeed += 1;
+  if (bMakeEasy) {
+    mTopLeftCornerPos.x += 0.3;
+  } else if (bMakeMed) {
+    mTopLeftCornerPos.x += 3;
+  } else if (bMakeHard) {
+    mTopLeftCornerPos.x += 4;
+  }
   mFps = toString((int)getAverageFps());
 }
 
@@ -109,11 +144,26 @@ void BasicSampleApp::draw() {
   mCol.a = mOpacity;
 
   gl::color(mCol);
+ // loop over enemies and draw enemy
+
+ vector<shooter::Enemy> enemies = game_engine_.GetAllEnemies();
+ for (int i = 0; i < enemies.size(); i++) {
+   if(bMakeEasy) {
+     gl::drawSolidCircle(mTopLeftCornerPos + sin(easySpeed) * 20, easyRadius);
+   } else if (bMakeMed) {
+     gl::drawSolidCircle(mTopLeftCornerPos + sin(medSpeed) * 2, medRadius);
+   } else if(bMakeHard) {
+     gl::drawSolidCircle(mTopLeftCornerPos + sin(hardSpeed) * 3, hardRadius);
+   } else {
+     gl::drawSolidCircle(mTopLeftCornerPos, easyRadius);
+   }
+ }
+
 
   if (bDrawOutline) {
     gl::drawStrokedCircle(mPosition + sin(time) * 7, mRadius);
   } else {
-    gl::drawSolidCircle(mPosition + sin(time) * 7, mRadius);
+    gl::drawSolidCircle(mPosition + sin(time - 3) * 7, mRadius);
   }
   gl::drawString("< " + mBubble, mPosition + vec2(mRadius + 10, -10), mCol,
                  Font("Arial", 24));

@@ -7,13 +7,13 @@
 
 namespace shooter {
 class Gun {
- public:
-  Gun(const Location&);
-
-  Location GetLocation();
-
  private:
-  Location location_;
+  int gun_row_;
+  int gun_col_;
+
+ public:
+  int GetGunRow();
+  int GetGunCol();
 };
 }
 #endif  // FINALPROJECT_GUN_H

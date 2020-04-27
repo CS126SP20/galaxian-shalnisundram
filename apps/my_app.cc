@@ -5,8 +5,8 @@
 #include <cinder/app/App.h>
 #include <cinder/gl/gl.h>
 
-
 namespace myapp {
+
 
 using cinder::app::KeyEvent;
 
@@ -20,8 +20,10 @@ void MyApp::draw() { }
 
 void MyApp::keyDown(KeyEvent event) { }
 
-void MyApp::DrawGun() {
+void MyApp::DrawGun() {}
 
-}
+void MyApp::DrawEnemy() {}
+
+void MyApp::DrawBullet() {}
 
 }  // namespace myapp

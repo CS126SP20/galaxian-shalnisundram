@@ -9,9 +9,16 @@ namespace shooter {
 
 class Bullet {
  public:
-  Bullet(const Location&)
+  Bullet();
 
-  private location_;
+ private:
+  int bullet_row_;
+  int bullet_col_;
+
+ public:
+  int GetBulletRow();
+  int GetBulletCol();
+
 };
 }
 
