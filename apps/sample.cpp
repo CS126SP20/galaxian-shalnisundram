@@ -30,9 +30,11 @@ class BasicSampleApp : public App {
   void draw() override;
   void keyDown(KeyEvent event) override;
   void DrawGun();
+  void DrawEnemies();
   void MoveGun();
   void MoveRight();
   void MoveLeft();
+  void SetToggleSettings();
 
   pretzel::PretzelGuiRef gui;
 
@@ -46,10 +48,10 @@ class BasicSampleApp : public App {
   float easySpeed;
   float medSpeed;
   float hardSpeed;
-  float gun_x_pos;
-  float gun_x_pos_two;
-  bool hit_right;
-  bool hit_left;
+  int gun_x_pos;
+  int gun_x_pos_two;
+  bool hit_right_wall_;
+  bool hit_left_wall_;
 
   size_t tile_size;
   vec2 mTopLeftCornerPos;
@@ -84,8 +86,8 @@ void BasicSampleApp::setup() {
   mOpacity = 0.75;
   gun_x_pos = getWindowWidth()*.5 + 30;
   gun_x_pos_two = gun_x_pos + 50;
-  hit_left = false;
-  hit_right = false;
+  hit_left_wall_ = false;
+  hit_right_wall_ = false;
   mPosition = getWindowCenter();
   mTopLeftCornerPos = getWindowPos();
   bDrawOutline = false;
@@ -149,25 +151,9 @@ void BasicSampleApp::update() {
   medSpeed += .7;
   hardSpeed += 1;
 
-//  while (bMakeEasy) {
-//    MoveRight();
-//    if (gun_x_pos_two == getWindowWidth()) {
-//      cout << "hi" << endl;
-//      while (gun_x_pos != 0) {
-//        MoveLeft();
-//      }
-//    }
-//  }
-
+  SetToggleSettings();
   MoveGun();
 
-  if (bMakeEasy) {
-    mTopLeftCornerPos.x += 1;
-  } else if (bMakeMed) {
-    mTopLeftCornerPos.x += 3;
-  } else if (bMakeHard) {
-    mTopLeftCornerPos.x += 4;
-  }
   mFps = toString((int)getAverageFps());
 }
 
@@ -180,20 +166,8 @@ void BasicSampleApp::draw() {
   DrawGun();
 
   gl::color(mCol);
- // loop over enemies and draw enemy
 
- vector<shooter::Enemy> enemies = game_engine_.GetAllEnemies();
- for (int i = 0; i < enemies.size(); i++) {
-   if(bMakeEasy) {
-     gl::drawSolidCircle(mTopLeftCornerPos + sin(easySpeed) * 20, easyRadius);
-   } else if (bMakeMed) {
-     gl::drawSolidCircle(mTopLeftCornerPos + sin(medSpeed) * 2, medRadius);
-   } else if(bMakeHard) {
-     gl::drawSolidCircle(mTopLeftCornerPos + sin(hardSpeed) * 3, hardRadius);
-   } else {
-     gl::drawSolidCircle(mTopLeftCornerPos, easyRadius);
-   }
- }
+  DrawEnemies();
 
   if (bDrawOutline) {
     gl::drawStrokedCircle(mPosition + sin(time) * 7, mRadius);
@@ -206,27 +180,54 @@ void BasicSampleApp::draw() {
   gui->draw();
 }
 
+void BasicSampleApp::DrawEnemies() {
+  vector<shooter::Enemy> enemies = game_engine_.GetAllEnemies();
+  for (int i = 0; i < enemies.size(); i++) {
+    if(bMakeEasy) {
+      gl::drawSolidCircle(mTopLeftCornerPos + sin(easySpeed) * 20, easyRadius);
+    } else if (bMakeMed) {
+      gl::drawSolidCircle(mTopLeftCornerPos + sin(medSpeed) * 2, medRadius);
+    } else if(bMakeHard) {
+      gl::drawSolidCircle(mTopLeftCornerPos + sin(hardSpeed) * 3, hardRadius);
+    } else {
+      gl::drawSolidCircle(mTopLeftCornerPos, easyRadius);
+    }
+  }
+}
+
 void BasicSampleApp::DrawGun() {
   gl::drawSolidRect(Rectf(gun_x_pos, getWindowHeight() - 70, gun_x_pos_two, getWindowHeight()));
 }
 
+void BasicSampleApp::SetToggleSettings() {
+  if (bMakeEasy) {
+    mTopLeftCornerPos.x += 1;
+  } else if (bMakeMed) {
+    mTopLeftCornerPos.x += 3;
+  } else if (bMakeHard) {
+    mTopLeftCornerPos.x += 4;
+  }
+}
+
 void BasicSampleApp::MoveGun() {
-  cout << "Hello" << endl;
+
+  // Check if gun hits the window's edge
   if (gun_x_pos == 0) {
-    hit_left = true;
-    hit_right = false;
+    hit_left_wall_ = true;
+    hit_right_wall_ = false;
     MoveRight();
   } else if (gun_x_pos_two == getWindowWidth()) {
-    hit_right = true;
-    hit_left = false;
+    hit_right_wall_ = true;
+    hit_left_wall_ = false;
   }
 
-  if (hit_left) {
+  // Set direction depending on most recent wall hit
+  if (hit_left_wall_) {
     MoveRight();
-  } else if (hit_right) {
+  } else if (hit_right_wall_) {
     MoveLeft();
   } else {
-    MoveRight();
+    MoveRight(); // Default
   }
 }
 
