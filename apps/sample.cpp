@@ -12,6 +12,7 @@
 #include "shooter/enemy.h"
 #include "shooter/game_engine.h"
 #include <algorithm>
+#include <iostream>
 
 #include "pretzel/PretzelGui.h"
 
@@ -20,6 +21,7 @@ using namespace ci::app;
 using namespace std;
 
 class BasicSampleApp : public App {
+
  public:
   static void prepareSettings(Settings *settings);
   void setup() override;
@@ -27,6 +29,10 @@ class BasicSampleApp : public App {
   void update() override;
   void draw() override;
   void keyDown(KeyEvent event) override;
+  void DrawGun();
+  void MoveGun();
+  void MoveRight();
+  void MoveLeft();
 
   pretzel::PretzelGuiRef gui;
 
@@ -40,7 +46,12 @@ class BasicSampleApp : public App {
   float easySpeed;
   float medSpeed;
   float hardSpeed;
+  float gun_x_pos;
+  float gun_x_pos_two;
+  bool hit_right;
+  bool hit_left;
 
+  size_t tile_size;
   vec2 mTopLeftCornerPos;
   vec2 mPosition;
   vec3 mVec3;
@@ -71,6 +82,10 @@ void BasicSampleApp::setup() {
   medRadius = 10;
   hardRadius = 5;
   mOpacity = 0.75;
+  gun_x_pos = getWindowWidth()*.5 + 30;
+  gun_x_pos_two = gun_x_pos + 50;
+  hit_left = false;
+  hit_right = false;
   mPosition = getWindowCenter();
   mTopLeftCornerPos = getWindowPos();
   bDrawOutline = false;
@@ -114,6 +129,11 @@ void BasicSampleApp::keyDown(KeyEvent event) {
   if (event.getChar() == 'g') {
     gui->toggleVisible();  // gui interaction will be disabled when invisible
   }
+//  switch(event.getCode()) {
+//    case KeyEvent::KEY_RIGHT: {
+//      gun_x_pos +=
+//    }
+//  }
 }
 
 void BasicSampleApp::mouseDown(MouseEvent event) {}
@@ -128,6 +148,19 @@ void BasicSampleApp::update() {
   easySpeed += .3;
   medSpeed += .7;
   hardSpeed += 1;
+
+//  while (bMakeEasy) {
+//    MoveRight();
+//    if (gun_x_pos_two == getWindowWidth()) {
+//      cout << "hi" << endl;
+//      while (gun_x_pos != 0) {
+//        MoveLeft();
+//      }
+//    }
+//  }
+
+  MoveGun();
+
   if (bMakeEasy) {
     mTopLeftCornerPos.x += 1;
   } else if (bMakeMed) {
@@ -139,15 +172,12 @@ void BasicSampleApp::update() {
 }
 
 void BasicSampleApp::draw() {
-  
+
   gl::clear(Color(84. / 255., 166. / 255., 1));
 
   mCol.a = mOpacity;
 
-  // Draw Gun
-  gl::drawSolidRect(Rectf((getWindowWidth() * .5) - 35,getWindowHeight() - 50,(getWindowWidth()*0.5) + 150, getWindowHeight()));
-  gl::drawSolidRect(Rectf((getWindowWidth() * .5) - 25, getWindowHeight() - 80, (getWindowWidth() * 0.5) + 140, getWindowHeight() - 50));
-  gl::drawSolidRect(Rectf((getWindowWidth()*.5) + 30, getWindowHeight() - 160, (getWindowWidth() * 0.5) + 80, getWindowHeight()-80));
+  DrawGun();
 
   gl::color(mCol);
  // loop over enemies and draw enemy
@@ -165,7 +195,6 @@ void BasicSampleApp::draw() {
    }
  }
 
-
   if (bDrawOutline) {
     gl::drawStrokedCircle(mPosition + sin(time) * 7, mRadius);
   } else {
@@ -176,6 +205,41 @@ void BasicSampleApp::draw() {
 
   gui->draw();
 }
+
+void BasicSampleApp::DrawGun() {
+  gl::drawSolidRect(Rectf(gun_x_pos, getWindowHeight() - 70, gun_x_pos_two, getWindowHeight()));
+}
+
+void BasicSampleApp::MoveGun() {
+  cout << "Hello" << endl;
+  if (gun_x_pos == 0) {
+    hit_left = true;
+    hit_right = false;
+    MoveRight();
+  } else if (gun_x_pos_two == getWindowWidth()) {
+    hit_right = true;
+    hit_left = false;
+  }
+
+  if (hit_left) {
+    MoveRight();
+  } else if (hit_right) {
+    MoveLeft();
+  } else {
+    MoveRight();
+  }
+}
+
+void BasicSampleApp::MoveRight() {
+  gun_x_pos += 1;
+  gun_x_pos_two += 1;
+}
+
+void BasicSampleApp::MoveLeft() {
+  gun_x_pos -= 10;
+  gun_x_pos_two -= 10;
+}
+
 
 CINDER_APP(BasicSampleApp, RendererGl, [](App::Settings* settings){
   settings->prepareWindow(Window::Format().size(1024, 768).title("PrezelGui :: BasicSample"));
