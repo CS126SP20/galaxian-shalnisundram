@@ -1,9 +1,14 @@
-# Final Project
+# CS 126 Final Project
+* For my final project, I decided to use the Cinder creative coding package to write a simplified version of 
+Galaxian, the 1979 arcade game.
 
-[![license](https://img.shields.io/badge/license-MIT-green)](LICENSE)
-[![docs](https://img.shields.io/badge/docs-yes-brightgreen)](docs/README.md)
+# Rules
+* The player must shoot at the "enemies" sliding across the top of the screen using the screen's gun to attain enough 
+points to win 
+* The player can move the gun with the right and left arrow keys
+* The player can choose to play with the "Easy", "Medium", or "Hard" difficulty levels by selecting a toggle on the 
+screen's left side
 
-Read [this document](https://cliutils.gitlab.io/modern-cmake/chapters/basics/structure.html) to understand the project
-layout.
-
-**Author**: Anonymous - [`example@illinois.edu`](mailto:example@illinois.edu)
+## Libraries and Tools
+* Along with using Cinder and open gl, I also used PretzelGui - a cinder block - to create a simplified and more 
+user-friendly interface for the game
