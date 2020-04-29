@@ -4,3 +4,7 @@
 
 #include <shooter/bullet.h>
 
+namespace shooter {
+
+
+}

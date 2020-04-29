@@ -13,7 +13,6 @@ using namespace ci;
 using namespace ci::app;
 using namespace std;
 
-
 namespace shooter {
 
 class Enemy {
@@ -25,10 +24,9 @@ class Enemy {
  public:
   Enemy(vec2 position, Color color);
   vec2 GetEnemyPosition();
+  void SetEnemyPosition(vec2 position);
   Color GetEnemyColor();
 };
-
-
 }
 
 

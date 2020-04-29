@@ -15,9 +15,16 @@ Enemy::Enemy(vec2 position, Color color) {
 vec2 Enemy::GetEnemyPosition() {
   return enemy_position_;
 }
+
+void Enemy::SetEnemyPosition(vec2 position) {
+  enemy_position_ = position;
+}
+
 Color Enemy::GetEnemyColor() {
   return enemy_color_;
 }
+
+
 
 }
 

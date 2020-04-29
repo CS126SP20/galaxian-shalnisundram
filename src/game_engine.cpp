@@ -18,20 +18,22 @@ using namespace std;
 namespace shooter {
 
 GameEngine::GameEngine()
-  : top_left_pos{getWindowPos()},
-    all_enemies{}
+  : top_left_pos{getWindowPos()}
 {}
 
-std::vector<Enemy> GameEngine::GetAllEnemies() {
+void GameEngine::InitializeEnemies() {
   const Color red_color = Color::hex(0xFF0000);
-  Enemy first_enemy(top_left_pos, red_color);
-  all_enemies.push_back(first_enemy);
   for (int i = 0; i < 10; i++) {
-    top_left_pos.x = i;
+    if (i >= 1) {
+      top_left_pos.x = all_enemies[i - 1].GetEnemyPosition().x + 80;
+    }
     Enemy new_enemy(top_left_pos, red_color);
     all_enemies.push_back(new_enemy);
   }
-  return all_enemies;
+}
+
+std::vector<Enemy>* GameEngine::GetAllEnemies() {
+  return &all_enemies;
 }
 
 }

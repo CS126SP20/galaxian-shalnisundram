@@ -5,18 +5,20 @@
 #ifndef FINALPROJECT_GAME_ENGINE_H
 #define FINALPROJECT_GAME_ENGINE_H
 
-#include "gun.h"
-#include "bullet.h"
-#include "enemy.h"
 #include <vector>
 
+#include "bullet.h"
+#include "enemy.h"
+#include "gun.h"
+
 namespace shooter {
+using namespace std;
 
 class GameEngine {
  public:
   GameEngine();
 
-  std::vector<Enemy> GetAllEnemies();
+  std::vector<Enemy> *GetAllEnemies();
 
   void MoveRight(float speed, float freq, float amp);
 
@@ -29,6 +31,8 @@ class GameEngine {
   shooter::Bullet GetBullet() const;
 
   shooter::Enemy GetEnemy() const;
+
+  void InitializeEnemies();
 
 
  private:
