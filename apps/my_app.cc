@@ -34,64 +34,32 @@ void MyApp::setup() {
   easy_speed_ = 0;
   med_speed_ = 0;
   hard_speed_ = 0;
-  mRadius = 25;
   easy_radius_ = 25;
   med_radius_ = 10;
   hard_radius_ = 5;
+  game_radius_ = 0;
   mOpacity = 0.75;
-  right_window_edge_ = 1022;
-  left_window_edge_ = 2;
-  gun_x_pos = getWindowWidth() * .5 + 30;
-  gun_x_pos_two = gun_x_pos + 50;
-  gun_center_ = ((gun_x_pos + ((gun_x_pos_two - gun_x_pos) / 2)));
-  bullet_height_ = getWindowHeight() - 70;
-  hit_right_wall_ = false;
-  hit_left_wall_ = false;
-  right_key_hit_ = false;
-  left_key_hit_ = false;
+  gun_x_pos_ = getWindowWidth() * .5 + 30;
+  gun_x_pos_two_ = gun_x_pos_ + 50;
+  gun_height_ = getWindowHeight() - 70;
   mPosition = getWindowCenter();
-  mTopLeftCornerPos = getWindowPos();
-  bDrawOutline = false;
   mCol = Color::white();
-  mBubble = "Hello, world!";
 
   mStringList = {"one", "two", "three"};
 
-  gui = pretzel::PretzelGui::create("Circle settings");
+  gui = pretzel::PretzelGui::create("Straight Shooting");
 
-  // Sliders can take ints, float, vec2, and vec3
-  gui->addSlider("Position", &mPosition, vec2(0, 0), getWindowSize());
-  gui->addLabel("Other Settings");
-  gui->addButton("Random Color", &MyApp::onButtonPress, this);
-  gui->addToggle("Draw outline", &bDrawOutline);
+  gui->addLabel("Set Difficulty");
   gui->addToggle("Easy", &bMakeEasy);
   gui->addToggle("Medium", &bMakeMed);
   gui->addToggle("Hard", &bMakeHard);
-  gui->addColorPicker("Circle Color", &mCol);
-
-  // Passing floats will keep your sliders as floats
-  gui->addSlider("Opacity", &mOpacity, 0.0, 1.0);
-  gui->addSlider("Radius", &mRadius, 0, 100);
-
-  // Textfields can be editable or non-editable
-  gui->addTextField("FPS", &mFps, false);
-  gui->addTextField("Speech Bubble", &mBubble, true);
-
-  gui->addEnum("Choose", &mStringList, &mStringChoice);
-
-  gui->addSaveLoad();
-
-  gui->loadSettings();  // load the last saved settings automatically
-
-  ci::gl::enableAlphaBlending();
 
   game_engine_.InitializeEnemies();
 }
 
 void MyApp::keyDown(KeyEvent event) {
-  if (event.getChar() == 'g') {
-    gui->toggleVisible();  // gui interaction will be disabled when invisible
-  }
+
+  // Allows right/left arrow keys to move the gun
   switch (event.getCode()) {
     case KeyEvent::KEY_RIGHT: {
       MoveRight();
@@ -102,8 +70,10 @@ void MyApp::keyDown(KeyEvent event) {
     }
   }
 
+  // Shoots bullet by hitting space bar
   if (event.getCode() == KeyEvent::KEY_SPACE) {
-    shooter::Bullet new_bullet({(gun_x_pos + (gun_x_pos_two - gun_x_pos) / 2), bullet_height_});
+    shooter::Bullet new_bullet({(gun_x_pos_ +
+    (gun_x_pos_two_ - gun_x_pos_) / 2), gun_height_});  // Bullet launch position set to center of gun's top edge
     game_engine_.InitializeBullets(new_bullet);
   }
 }
@@ -116,7 +86,6 @@ void MyApp::onButtonPress() {
 }
 
 void MyApp::update() {
-
   time += .1;
   easy_speed_ += .3;
   med_speed_ += .7;
@@ -125,64 +94,57 @@ void MyApp::update() {
   mPosition.x += 2;
   mPosition.x = mPosition.x + sin(time) * 7;
 
-
   // Moves enemy in a sin motion
   vector<shooter::Enemy> *these_enemies = game_engine_.GetAllEnemies();
-  for (int i = 0; i < these_enemies -> size(); i++) {
-    vec2 this_position = (*these_enemies)[i].GetEnemyPosition();
-    this_position.x += sin(time) * 7;
-    (*these_enemies)[i].SetEnemyPosition(this_position);
+  for (auto & enemy : *these_enemies) {
+    vec2 current_position = enemy.GetEnemyPosition();
+    current_position.x += sin(time) * 7;
+    enemy.SetEnemyPosition(current_position);
   }
-
   MoveBullet();
-  MoveGun();
-
-  mFps = toString((int)getAverageFps());
+  EraseHitEnemy();
 }
 
 void MyApp::draw() {
   gl::clear(Color(84. / 255., 166. / 255., 1));
-
-  mCol.a = mOpacity;
-
-  DrawGun();
-
   gl::color(mCol);
-
+  mCol.a = mOpacity;
+  DrawGun();
   DrawEnemies();
   DrawBullet();
-
-  if (bDrawOutline) {
-    gl::drawStrokedCircle(mPosition + sin(time) * 7, mRadius);
-  } else {
-    gl::drawSolidCircle(mPosition + sin(time - 3) * 7, mRadius);
-  }
-  gl::drawString("< " + mBubble, mPosition + vec2(mRadius + 10, -10), mCol,
-                 Font("Arial", 24));
-
-  gui->draw();
+  gui->draw(); // Draws toggles on the side of the window
 }
 
 void MyApp::DrawEnemies() {
-  mCol = ColorA(1.0, 1.0, 0.0, mOpacity);
-  gl::color(mCol);
+  red_color = ColorA(1.0, 1.0, 0.0, mOpacity);
+  gl::color(red_color);
   vector<shooter::Enemy> *enemies = game_engine_.GetAllEnemies();
-  for (int i = 0; i < enemies->size(); i++) {
-    enemy_position = (*enemies)[i].GetEnemyPosition();
-    if (bMakeEasy) {
-      gl::drawSolidCircle(enemy_position, easy_radius_);
-    } else if (bMakeMed) {
-      gl::drawSolidCircle(enemy_position, med_radius_);
-    } else if (bMakeHard) {
-      gl::drawSolidCircle(enemy_position, hard_radius_);
-    } else {
-      gl::drawSolidCircle(enemy_position, easy_radius_);
+
+  // Iterates through all enemies and draw circles to represent them
+  for (auto & enemy : *enemies) {
+    enemy_position = enemy.GetEnemyPosition();
+
+    // Set radius and draw circles based on the difficulty level selected
+    if (enemy.CheckEnemyAlive()) {
+      if (bMakeEasy) {
+        game_radius_ = easy_radius_;
+        gl::drawSolidCircle(enemy_position, game_radius_);
+      } else if (bMakeMed) {
+        game_radius_ = med_radius_;
+        gl::drawSolidCircle(enemy_position, game_radius_);
+      } else if (bMakeHard) {
+        game_radius_ = hard_radius_;
+        gl::drawSolidCircle(enemy_position, game_radius_);
+      } else {
+        game_radius_ = easy_radius_;
+        gl::drawSolidCircle(enemy_position, game_radius_);
+      }
     }
   }
 }
 
 void MyApp::DrawGun() {
-  gl::drawSolidRect(Rectf(gun_x_pos, getWindowHeight() - 70, gun_x_pos_two,
+  gl::drawSolidRect(Rectf(gun_x_pos_, getWindowHeight() - 70, gun_x_pos_two_,
                           getWindowHeight()));
 }
 
@@ -190,59 +152,52 @@ void MyApp::DrawBullet() {
   mCol = ColorA(1.0, 0.0, 0.0, mOpacity);
   gl::color(mCol);
   std::vector<shooter::Bullet> *bullets = game_engine_.GetAllBullets();
-  for (int i = 0; i < bullets -> size(); i++) {
-    gl::drawSolidCircle((*bullets)[i].GetBulletPosition(), 5);
-  }
-//  float bullet_x_pos = gun_center_;
-//  //float bullet_x_pos = gun_x_pos;
-//  bullet_position_ = {bullet_x_pos, bullet_height_};
-//  //bullet_position_ = {bullet_x_pos, bullet_height_};
-//  gl::drawSolidCircle(bullet_position_, 60);
-//  cout << bullet_position_ << endl;
-//  cout << getWindowCenter().x << endl;
 
-}
-
-void MyApp::MoveGun() {
-
-  return;
-
-  // Check if gun hits the window's edge
-  if (gun_x_pos == left_window_edge_) {
-    hit_left_wall_ = true;
-    hit_right_wall_ = false;
-  } else if (gun_x_pos_two == right_window_edge_) {
-    hit_right_wall_ = true;
-    hit_left_wall_ = false;
-  }
-
-  // Set direction depending on most recent wall hit
-  if (right_key_hit_ || hit_left_wall_) {
-    cout << "Hi" << endl;
-    MoveRight();
-  } else if (left_key_hit_|| hit_right_wall_) {
-    MoveLeft();
-  } else {
-    MoveRight();  // Default
+  // Draws bullet for every entry in the bullets vector
+  for (auto & bullet : *bullets) {
+    gl::drawSolidCircle(bullet.GetBulletPosition(), 5);
   }
 }
 
 void MyApp::MoveRight() {
-  gun_x_pos += 10;
-  gun_x_pos_two += 10;
+  gun_x_pos_ += 10;
+  gun_x_pos_two_ += 10;
 }
 
 void MyApp::MoveLeft() {
-  gun_x_pos -= 10;
-  gun_x_pos_two -= 10;
+  gun_x_pos_ -= 10;
+  gun_x_pos_two_ -= 10;
 }
 
 void MyApp::MoveBullet() {
   std::vector<shooter::Bullet> *bullets = game_engine_.GetAllBullets();
-  for (int i = 0; i < bullets -> size(); i++) {
-    vec2 pos = (*bullets)[i].GetBulletPosition();
+
+  // Iterate through all bullets and set its position to the gun's center
+  for (auto & bullet : *bullets) {
+    vec2 pos = bullet.GetBulletPosition();
     pos.y -= 5;
-    (*bullets)[i].SetBulletPosition(pos);
+    bullet.SetBulletPosition(pos);
+  }
+}
+
+void MyApp::EraseHitEnemy() {
+  std::vector<shooter::Bullet> *bullets = game_engine_.GetAllBullets();
+  std::vector<shooter::Enemy> *enemies = game_engine_.GetAllEnemies();
+
+  // Iterate through every enemy for every bullet
+  // Check if distance between enemy and bullet is small than enemy radius
+  for (auto & bullet : *bullets) {
+    for (auto & enemy : *enemies) {
+      vec2 bullet_pos = bullet.GetBulletPosition();
+      vec2 enemy_pos = enemy.GetEnemyPosition();
+      float distance_x = (bullet_pos.x - enemy_pos.x);
+      float distance_y = (bullet_pos.y - enemy_pos.y);
+      float distance = std::sqrtf((distance_x * distance_x) + (distance_y * distance_y));
+
+      if (distance <= game_radius_) { // bullet has intersected the enemy
+        enemy.KillEnemy();
+      }
+    }
   }
 }
 } // namespace myapp

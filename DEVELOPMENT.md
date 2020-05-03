@@ -13,7 +13,17 @@
   - Implemented methods such as MoveGun(), MoveRight(), MoveLeft(), etc.
   - Still need to insert KeyEvents to change gun direction, make more than one enemy move across the screen
   
---**4/28/2020** Refined/Cleaned Code and Implemented Methods to Move Multiple Enemies
+-- **4/28/2020** Refined/Cleaned Code and Implemented Methods to Move Multiple Enemies
   - Edited GetAllEnemies() method to move multiple enemies
   - Split sample.cc code into .h and .cc files
   - Still need to insert KeyEvents and shoot bullets at enemies
+  
+-- **5/1/2020** Createe Bullets that Shoot Upward
+  - Created bullet class, implemented DrawBullet() and MoveBullet()
+  - Still need to erase enemies once a bullet hits them
+    
+-- **5/2/2020** Erased Enemies that have been hit
+   - Implemented CheckEnemyAlive(), KillEnemy() and bool variable for each enemy 
+   - Implemented EraseHitEnemy() which uses the distance formula to determine if bullet hit enemy
+   - Plan to implement a game structure with a beginning and end and a different sin motion for enemies
+ 

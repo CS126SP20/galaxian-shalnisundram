@@ -32,45 +32,38 @@ class MyApp : public cinder::app::App {
   void MoveBullet();
   void MoveRight();
   void MoveLeft();
+  void UpdateEnemies();
+  void EraseHitEnemy();
 
  public:
   pretzel::PretzelGuiRef gui;
 
   shooter::GameEngine game_engine_;
-  float mRadius;
   float easy_radius_;
   float med_radius_;
   float hard_radius_;
+  float game_radius_;
   float mOpacity;
   float time;
   float easy_speed_;
   float med_speed_;
   float hard_speed_;
-  float right_window_edge_;
-  float left_window_edge_;
-  float gun_x_pos;
-  float gun_x_pos_two;
-  float gun_center_;
-  float bullet_height_;
+  float gun_x_pos_;
+  float gun_x_pos_two_;
+  float gun_height_;
 
-  bool bDrawOutline;
   bool bMakeEasy;
   bool bMakeMed;
   bool bMakeHard;
-  bool hit_right_wall_;
-  bool hit_left_wall_;
-  bool right_key_hit_;
-  bool left_key_hit_;
 
-  vec2 mTopLeftCornerPos;
   vec2 mPosition;
   vec2 enemy_position;
   vec2 bullet_position_;
 
   string mFps;
-  string mBubble;
 
   ci::ColorA mCol;
+  ci::ColorA red_color;
   void onButtonPress();
 
   std::vector<std::string> mStringList;

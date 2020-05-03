@@ -20,12 +20,15 @@ class Enemy {
  private:
   vec2 enemy_position_;
   Color enemy_color_;
+  bool is_alive_;
 
  public:
-  Enemy(vec2 position, Color color);
+  Enemy(vec2 position, Color color, bool is_alive_);
   vec2 GetEnemyPosition();
   void SetEnemyPosition(vec2 position);
   Color GetEnemyColor();
+  bool CheckEnemyAlive();
+  void KillEnemy();
 };
 }
 

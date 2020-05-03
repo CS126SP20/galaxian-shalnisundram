@@ -27,7 +27,7 @@ void GameEngine::InitializeEnemies() {
     if (i >= 1) {
       top_left_pos.x = all_enemies[i - 1].GetEnemyPosition().x + 80;
     }
-    Enemy new_enemy(top_left_pos, red_color);
+    Enemy new_enemy(top_left_pos, red_color, true);
     all_enemies.push_back(new_enemy);
   }
 }
