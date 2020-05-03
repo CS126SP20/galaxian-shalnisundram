@@ -17,6 +17,7 @@
 #include "shooter/bullet.h"
 #include "my_app.h"
 
+
 #include "pretzel/PretzelGui.h"
 
 namespace myapp {
@@ -74,6 +75,7 @@ void MyApp::keyDown(KeyEvent event) {
   if (event.getCode() == KeyEvent::KEY_SPACE) {
     shooter::Bullet new_bullet({(gun_x_pos_ +
     (gun_x_pos_two_ - gun_x_pos_) / 2), gun_height_});  // Bullet launch position set to center of gun's top edge
+    PlayLaserAudio();
     game_engine_.InitializeBullets(new_bullet);
   }
 }
@@ -125,7 +127,7 @@ void MyApp::DrawEnemies() {
     enemy_position = enemy.GetEnemyPosition();
 
     // Set radius and draw circles based on the difficulty level selected
-    if (enemy.CheckEnemyAlive()) {
+    if (enemy.CheckEnemyAlive()) { // Only draw enemies that haven't been hit
       if (bMakeEasy) {
         game_radius_ = easy_radius_;
         gl::drawSolidCircle(enemy_position, game_radius_);
@@ -195,10 +197,31 @@ void MyApp::EraseHitEnemy() {
       float distance = std::sqrtf((distance_x * distance_x) + (distance_y * distance_y));
 
       if (distance <= game_radius_) { // bullet has intersected the enemy
+        if (enemy.CheckEnemyAlive()) {
+          PlayEnemyPopAudio();
+        }
         enemy.KillEnemy();
       }
     }
   }
+}
+
+void MyApp::PlayLaserAudio() {
+  cinder::audio::SourceFileRef sourceFile = cinder::audio::load(
+      cinder::app::loadAsset( "laser_audio.wav"));
+  laser_sound_ = cinder::audio::Voice::create( sourceFile );
+
+  // Start playing background music
+  laser_sound_->start();
+}
+
+void MyApp::PlayEnemyPopAudio() {
+  cinder::audio::SourceFileRef sourceFile = cinder::audio::load(
+      cinder::app::loadAsset( "enemy_pop.wav"));
+  enemy_pop_ = cinder::audio::Voice::create( sourceFile );
+
+  // Start playing background music
+  enemy_pop_->start();
 }
 } // namespace myapp
 

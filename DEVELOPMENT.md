@@ -18,12 +18,13 @@
   - Split sample.cc code into .h and .cc files
   - Still need to insert KeyEvents and shoot bullets at enemies
   
--- **5/1/2020** Createe Bullets that Shoot Upward
+-- **5/1/2020** Create Bullets that Shoot Upward
   - Created bullet class, implemented DrawBullet() and MoveBullet()
   - Still need to erase enemies once a bullet hits them
     
--- **5/2/2020** Erased Enemies that have been hit
+-- **5/2/2020** Erased Enemies that have been hit and inserted audio 
    - Implemented CheckEnemyAlive(), KillEnemy() and bool variable for each enemy 
    - Implemented EraseHitEnemy() which uses the distance formula to determine if bullet hit enemy
+   - Implemented PlayLaserAudio() and PlayEnemyPopAudio() to play audio
    - Plan to implement a game structure with a beginning and end and a different sin motion for enemies
  

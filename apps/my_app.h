@@ -13,6 +13,7 @@
 #include "shooter/game_engine.h"
 #include <algorithm>
 #include <iostream>
+#include <cinder/audio/audio.h>
 
 namespace myapp {
 
@@ -34,6 +35,8 @@ class MyApp : public cinder::app::App {
   void MoveLeft();
   void UpdateEnemies();
   void EraseHitEnemy();
+  void PlayLaserAudio();
+  void PlayEnemyPopAudio();
 
  public:
   pretzel::PretzelGuiRef gui;
@@ -65,6 +68,9 @@ class MyApp : public cinder::app::App {
   ci::ColorA mCol;
   ci::ColorA red_color;
   void onButtonPress();
+
+  cinder::audio::VoiceRef laser_sound_;
+  cinder::audio::VoiceRef enemy_pop_;
 
   std::vector<std::string> mStringList;
   int mStringChoice = 0;
