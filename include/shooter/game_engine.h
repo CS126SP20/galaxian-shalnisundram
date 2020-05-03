@@ -20,6 +20,8 @@ class GameEngine {
 
   std::vector<Enemy> *GetAllEnemies();
 
+  std::vector<Bullet> *GetAllBullets();
+
   void MoveRight(float speed, float freq, float amp);
 
   void MoveLeft();
@@ -34,9 +36,11 @@ class GameEngine {
 
   void InitializeEnemies();
 
+  void InitializeBullets(Bullet bullet);
 
  private:
   std::vector<Enemy> all_enemies;
+  std::vector<Bullet> bullets;
   vec2 top_left_pos;
 };
 }

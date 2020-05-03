@@ -7,13 +7,12 @@
 
 namespace shooter {
 class Gun {
- private:
-  int gun_row_;
-  int gun_col_;
+// rpivate:
+//  float gun_center_ =
+//
+//
+// public:
 
- public:
-  int GetGunRow();
-  int GetGunCol();
 };
 }
 #endif  // FINALPROJECT_GUN_H

@@ -32,8 +32,16 @@ void GameEngine::InitializeEnemies() {
   }
 }
 
+void GameEngine::InitializeBullets(Bullet bullet) {
+  bullets.push_back(bullet);
+}
+
 std::vector<Enemy>* GameEngine::GetAllEnemies() {
   return &all_enemies;
+}
+
+std::vector<Bullet>* GameEngine::GetAllBullets() {
+  return &bullets;
 }
 
 }

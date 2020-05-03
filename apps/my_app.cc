@@ -14,6 +14,7 @@
 #include "shooter/game_engine.h"
 #include <algorithm>
 #include <iostream>
+#include "shooter/bullet.h"
 #include "my_app.h"
 
 #include "pretzel/PretzelGui.h"
@@ -30,20 +31,24 @@ void MyApp::setup() {
   Rand::randomize();
 
   time = 0;
-  easySpeed = 0;
-  medSpeed = 0;
-  hardSpeed = 0;
+  easy_speed_ = 0;
+  med_speed_ = 0;
+  hard_speed_ = 0;
   mRadius = 25;
-  easyRadius = 25;
-  medRadius = 10;
-  hardRadius = 5;
+  easy_radius_ = 25;
+  med_radius_ = 10;
+  hard_radius_ = 5;
   mOpacity = 0.75;
   right_window_edge_ = 1022;
   left_window_edge_ = 2;
   gun_x_pos = getWindowWidth() * .5 + 30;
   gun_x_pos_two = gun_x_pos + 50;
-  hit_left_wall_ = false;
+  gun_center_ = ((gun_x_pos + ((gun_x_pos_two - gun_x_pos) / 2)));
+  bullet_height_ = getWindowHeight() - 70;
   hit_right_wall_ = false;
+  hit_left_wall_ = false;
+  right_key_hit_ = false;
+  left_key_hit_ = false;
   mPosition = getWindowCenter();
   mTopLeftCornerPos = getWindowPos();
   bDrawOutline = false;
@@ -87,13 +92,19 @@ void MyApp::keyDown(KeyEvent event) {
   if (event.getChar() == 'g') {
     gui->toggleVisible();  // gui interaction will be disabled when invisible
   }
-  switch(event.getCode()) {
+  switch (event.getCode()) {
     case KeyEvent::KEY_RIGHT: {
       MoveRight();
+      break;
     }
-    case KeyEvent::KEY_LEFT : {
+    case KeyEvent::KEY_LEFT: {
       MoveLeft();
     }
+  }
+
+  if (event.getCode() == KeyEvent::KEY_SPACE) {
+    shooter::Bullet new_bullet({(gun_x_pos + (gun_x_pos_two - gun_x_pos) / 2), bullet_height_});
+    game_engine_.InitializeBullets(new_bullet);
   }
 }
 
@@ -107,13 +118,13 @@ void MyApp::onButtonPress() {
 void MyApp::update() {
 
   time += .1;
-  easySpeed += .3;
-  medSpeed += .7;
-  hardSpeed += 1;
-  //enemy_position += 2;
+  easy_speed_ += .3;
+  med_speed_ += .7;
+  hard_speed_ += 1;
   enemy_position.x += 2;
   mPosition.x += 2;
   mPosition.x = mPosition.x + sin(time) * 7;
+
 
   // Moves enemy in a sin motion
   vector<shooter::Enemy> *these_enemies = game_engine_.GetAllEnemies();
@@ -123,6 +134,7 @@ void MyApp::update() {
     (*these_enemies)[i].SetEnemyPosition(this_position);
   }
 
+  MoveBullet();
   MoveGun();
 
   mFps = toString((int)getAverageFps());
@@ -138,6 +150,7 @@ void MyApp::draw() {
   gl::color(mCol);
 
   DrawEnemies();
+  DrawBullet();
 
   if (bDrawOutline) {
     gl::drawStrokedCircle(mPosition + sin(time) * 7, mRadius);
@@ -151,17 +164,19 @@ void MyApp::draw() {
 }
 
 void MyApp::DrawEnemies() {
+  mCol = ColorA(1.0, 1.0, 0.0, mOpacity);
+  gl::color(mCol);
   vector<shooter::Enemy> *enemies = game_engine_.GetAllEnemies();
   for (int i = 0; i < enemies->size(); i++) {
     enemy_position = (*enemies)[i].GetEnemyPosition();
     if (bMakeEasy) {
-      gl::drawSolidCircle(enemy_position, easyRadius);
+      gl::drawSolidCircle(enemy_position, easy_radius_);
     } else if (bMakeMed) {
-      gl::drawSolidCircle(enemy_position, medRadius);
+      gl::drawSolidCircle(enemy_position, med_radius_);
     } else if (bMakeHard) {
-      gl::drawSolidCircle(enemy_position, hardRadius);
+      gl::drawSolidCircle(enemy_position, hard_radius_);
     } else {
-      gl::drawSolidCircle(enemy_position, easyRadius);
+      gl::drawSolidCircle(enemy_position, easy_radius_);
     }
   }
 }
@@ -171,22 +186,41 @@ void MyApp::DrawGun() {
                           getWindowHeight()));
 }
 
+void MyApp::DrawBullet() {
+  mCol = ColorA(1.0, 0.0, 0.0, mOpacity);
+  gl::color(mCol);
+  std::vector<shooter::Bullet> *bullets = game_engine_.GetAllBullets();
+  for (int i = 0; i < bullets -> size(); i++) {
+    gl::drawSolidCircle((*bullets)[i].GetBulletPosition(), 5);
+  }
+//  float bullet_x_pos = gun_center_;
+//  //float bullet_x_pos = gun_x_pos;
+//  bullet_position_ = {bullet_x_pos, bullet_height_};
+//  //bullet_position_ = {bullet_x_pos, bullet_height_};
+//  gl::drawSolidCircle(bullet_position_, 60);
+//  cout << bullet_position_ << endl;
+//  cout << getWindowCenter().x << endl;
+
+}
+
 void MyApp::MoveGun() {
+
+  return;
 
   // Check if gun hits the window's edge
   if (gun_x_pos == left_window_edge_) {
     hit_left_wall_ = true;
     hit_right_wall_ = false;
-    MoveRight();
   } else if (gun_x_pos_two == right_window_edge_) {
     hit_right_wall_ = true;
     hit_left_wall_ = false;
   }
 
   // Set direction depending on most recent wall hit
-  if (hit_left_wall_) {
+  if (right_key_hit_ || hit_left_wall_) {
+    cout << "Hi" << endl;
     MoveRight();
-  } else if (hit_right_wall_) {
+  } else if (left_key_hit_|| hit_right_wall_) {
     MoveLeft();
   } else {
     MoveRight();  // Default
@@ -201,6 +235,15 @@ void MyApp::MoveRight() {
 void MyApp::MoveLeft() {
   gun_x_pos -= 10;
   gun_x_pos_two -= 10;
+}
+
+void MyApp::MoveBullet() {
+  std::vector<shooter::Bullet> *bullets = game_engine_.GetAllBullets();
+  for (int i = 0; i < bullets -> size(); i++) {
+    vec2 pos = (*bullets)[i].GetBulletPosition();
+    pos.y -= 5;
+    (*bullets)[i].SetBulletPosition(pos);
+  }
 }
 } // namespace myapp
 

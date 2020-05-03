@@ -2,12 +2,12 @@
 // Created by Shalni Sundram on 4/22/20.
 //
 
-#include "cinder/app/App.h"
-
-#include "pretzel/PretzelGui.h"
-
 #ifndef FINALPROJECT_BULLET_H
 #define FINALPROJECT_BULLET_H
+
+
+#include "cinder/app/App.h"
+#include "pretzel/PretzelGui.h"
 
 using namespace ci;
 using namespace ci::app;
@@ -16,15 +16,14 @@ using namespace std;
 namespace shooter {
 
 class Bullet {
- public:
-  Bullet();
 
  private:
   vec2 bullet_position_;
 
  public:
-  void SetEnemyPosition();
+  Bullet(const vec2& bullet_position_);
   vec2 GetBulletPosition();
+  void SetBulletPosition(vec2 position);
 };
 }
 

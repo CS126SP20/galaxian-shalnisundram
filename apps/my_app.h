@@ -14,8 +14,6 @@
 #include <algorithm>
 #include <iostream>
 
-
-
 namespace myapp {
 
 class MyApp : public cinder::app::App {
@@ -28,29 +26,32 @@ class MyApp : public cinder::app::App {
   void draw();
   void keyDown(KeyEvent event);
   void DrawGun();
+  void DrawBullet();
   void DrawEnemies();
   void MoveGun();
+  void MoveBullet();
   void MoveRight();
   void MoveLeft();
-  void SetToggleSettings();
 
  public:
   pretzel::PretzelGuiRef gui;
 
   shooter::GameEngine game_engine_;
   float mRadius;
-  float easyRadius;
-  float medRadius;
-  float hardRadius;
+  float easy_radius_;
+  float med_radius_;
+  float hard_radius_;
   float mOpacity;
   float time;
-  float easySpeed;
-  float medSpeed;
-  float hardSpeed;
+  float easy_speed_;
+  float med_speed_;
+  float hard_speed_;
   float right_window_edge_;
   float left_window_edge_;
   float gun_x_pos;
   float gun_x_pos_two;
+  float gun_center_;
+  float bullet_height_;
 
   bool bDrawOutline;
   bool bMakeEasy;
@@ -58,10 +59,13 @@ class MyApp : public cinder::app::App {
   bool bMakeHard;
   bool hit_right_wall_;
   bool hit_left_wall_;
+  bool right_key_hit_;
+  bool left_key_hit_;
 
   vec2 mTopLeftCornerPos;
   vec2 mPosition;
   vec2 enemy_position;
+  vec2 bullet_position_;
 
   string mFps;
   string mBubble;
