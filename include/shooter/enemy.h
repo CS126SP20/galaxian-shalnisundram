@@ -23,12 +23,12 @@ class Enemy {
   bool is_alive_;
 
  public:
-  Enemy(vec2 position, Color color, bool is_alive_);
+  Enemy(vec2 position, const Color& enemy_color_, bool is_alive_);
   vec2 GetEnemyPosition();
-  void SetEnemyPosition(vec2 position);
-  Color GetEnemyColor();
+  void SetEnemyPosition(const vec2& position);
   bool CheckEnemyAlive();
   void KillEnemy();
+
 };
 }
 

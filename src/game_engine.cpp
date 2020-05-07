@@ -5,11 +5,7 @@
 #include "shooter/game_engine.h"
 #include "cinder/app/App.h"
 #include "cinder/app/RendererGl.h"
-#include "cinder/gl/gl.h"
 #include "cinder/Rand.h"
-#include "cinder/CinderMath.h"
-
-#include "pretzel/PretzelGui.h"
 
 using namespace ci;
 using namespace ci::app;
@@ -23,16 +19,17 @@ GameEngine::GameEngine()
 
 void GameEngine::InitializeEnemies() {
   const Color red_color = Color::hex(0xFF0000);
-  for (int i = 0; i < 10; i++) {
+  for (int i = 0; i < kEnemies; i++) {
     if (i >= 1) {
-      top_left_pos.x = all_enemies[i - 1].GetEnemyPosition().x + 80;
+      top_left_pos.x = all_enemies[i - 1].GetEnemyPosition().x +
+          kEnemySeparatingDistance;
     }
     Enemy new_enemy(top_left_pos, red_color, true);
     all_enemies.push_back(new_enemy);
   }
 }
 
-void GameEngine::InitializeBullets(Bullet bullet) {
+void GameEngine::InitializeBullets(const Bullet& bullet) {
   bullets.push_back(bullet);
 }
 

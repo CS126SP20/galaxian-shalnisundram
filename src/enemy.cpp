@@ -7,7 +7,7 @@
 
 namespace shooter {
 
-Enemy::Enemy(vec2 position, Color color, bool alive) {
+Enemy::Enemy(vec2 position, const Color& color, bool alive) {
   enemy_position_ = position;
   enemy_color_ = color;
   is_alive_ = alive;
@@ -17,21 +17,17 @@ vec2 Enemy::GetEnemyPosition() {
   return enemy_position_;
 }
 
-void Enemy::SetEnemyPosition(vec2 position) {
+void Enemy::SetEnemyPosition(const vec2& position) {
   enemy_position_ = position;
-}
-
-Color Enemy::GetEnemyColor() {
-  return enemy_color_;
 }
 
 bool Enemy::CheckEnemyAlive() {
   return is_alive_;
 }
 
+
 void Enemy::KillEnemy() {
   is_alive_ = false;
 }
-
 }
 

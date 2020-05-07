@@ -9,39 +9,24 @@
 
 #include "bullet.h"
 #include "enemy.h"
-#include "gun.h"
 
 namespace shooter {
 using namespace std;
 
 class GameEngine {
- public:
-  GameEngine();
-
-  std::vector<Enemy> *GetAllEnemies();
-
-  std::vector<Bullet> *GetAllBullets();
-
-  void MoveRight(float speed, float freq, float amp);
-
-  void MoveLeft();
-
-  void Reset();
-
-  shooter::Gun GetGun() const;
-
-  shooter::Bullet GetBullet() const;
-
-  shooter::Enemy GetEnemy() const;
-
-  void InitializeEnemies();
-
-  void InitializeBullets(Bullet bullet);
-
  private:
+  const float kEnemySeparatingDistance = 70;
+  const int kEnemies = 10;
   std::vector<Enemy> all_enemies;
   std::vector<Bullet> bullets;
   vec2 top_left_pos;
+
+ public:
+  GameEngine();
+  std::vector<Enemy> *GetAllEnemies();
+  std::vector<Bullet> *GetAllBullets();
+  void InitializeEnemies();
+  void InitializeBullets(const Bullet& bullet);
 };
 }
 
