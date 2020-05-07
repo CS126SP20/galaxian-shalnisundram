@@ -14,7 +14,7 @@ using namespace std;
 namespace shooter {
 
 GameEngine::GameEngine()
-  : top_left_pos{getWindowPos()}
+  : top_left_pos{getWindowPos() - 120}
 {}
 
 void GameEngine::InitializeEnemies() {
@@ -29,7 +29,7 @@ void GameEngine::InitializeEnemies() {
   }
 }
 
-void GameEngine::InitializeBullets(const Bullet& bullet) {
+void GameEngine::InitializeBullets(Bullet& bullet) {
   bullets.push_back(bullet);
 }
 

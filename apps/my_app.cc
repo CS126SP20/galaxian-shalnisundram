@@ -95,12 +95,7 @@ void MyApp::onButtonPress() {
 }
 
 void MyApp::update() {
-  time += kTimeChange;
-  easy_speed_ += kEasyPositionChange;
-  med_speed_ += kMedPositionChange;
-  hard_speed_ += kHardPositionChange;
-  enemy_position.x += kEnemyPositionChange;
-  //enemy_position.y += kEnemyPositionChange;
+
   // Check if the game is over
   if (CheckGameWinner() || CheckGameLoser()) {
     DrawGameOver();
@@ -212,14 +207,19 @@ void MyApp::PrintTextBox(vec2 &location, float text_size_,
       .text(text);
 
   const auto box_size = text_box.getSize();
-  const cinder::vec2 box_location = { (location.x - (box_size.x / 2)),
-                                      (location.y - box_size.y / 2)};
+  const cinder::vec2 box_location = { (location.x - (box_size.x / 2.0)),
+                                      (location.y - box_size.y / 2.0)};
   const auto surface = text_box.render();
   const auto texture = cinder::gl::Texture::create(surface);
   cinder::gl::draw(texture, box_location);
 }
 
 void MyApp::MoveEnemy() {
+  time += kTimeChange;
+  easy_speed_ += kEasyPositionChange;
+  med_speed_ += kMedPositionChange;
+  hard_speed_ += kHardPositionChange;
+  enemy_position.x += kEnemyPositionChange;
 
   // Moves enemy in a sin motion
   vector<shooter::Enemy> *these_enemies = game_engine_.GetAllEnemies();
@@ -330,5 +330,4 @@ CINDER_APP(myapp::MyApp, RendererGl, [](App::Settings* settings){
   settings->prepareWindow(Window::Format().size(1024, 768).
   title("PrezelGui :: MyApp"));
   settings->setFrameRate(60.0f);
-//	settings->setHighDensityDisplayEnabled();
 })

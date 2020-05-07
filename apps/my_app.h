@@ -29,7 +29,6 @@ class MyApp : public cinder::app::App {
  private:
   const int kGunHeight = getWindowHeight() - 70;
   const int kTotalTime = 45;
-  const int kBulletRadius = 5;
   const int kWindowHeightPortion = 70;
   const int kGunWidth = 50;
   const double kGunInitialXPos = getWindowWidth() * .5 + 30;
@@ -38,6 +37,7 @@ class MyApp : public cinder::app::App {
   const float kEasyRadius = 25;
   const float kMedRadius = 10;
   const float kHardRadius = 5;
+  const float kBulletRadius = 5;
   const float kTimerSize = 30;
   const float kBulletPositionChange = 5;
   const float kBigTextSize = 75;

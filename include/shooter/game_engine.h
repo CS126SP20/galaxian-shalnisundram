@@ -15,7 +15,7 @@ using namespace std;
 
 class GameEngine {
  private:
-  const float kEnemySeparatingDistance = 70;
+  const float kEnemySeparatingDistance = 100;
   const int kEnemies = 10;
   std::vector<Enemy> all_enemies;
   std::vector<Bullet> bullets;
@@ -26,7 +26,7 @@ class GameEngine {
   std::vector<Enemy> *GetAllEnemies();
   std::vector<Bullet> *GetAllBullets();
   void InitializeEnemies();
-  void InitializeBullets(const Bullet& bullet);
+  void InitializeBullets(Bullet& bullet);
 };
 }
 

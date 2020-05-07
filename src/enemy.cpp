@@ -25,7 +25,6 @@ bool Enemy::CheckEnemyAlive() {
   return is_alive_;
 }
 
-
 void Enemy::KillEnemy() {
   is_alive_ = false;
 }
