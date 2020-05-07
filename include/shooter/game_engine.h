@@ -30,5 +30,4 @@ class GameEngine {
 };
 }
 
-
 #endif  // FINALPROJECT_GAME_ENGINE_H

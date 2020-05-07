@@ -4,7 +4,6 @@
 
 #include <shooter/enemy.h>
 
-
 namespace shooter {
 
 Enemy::Enemy(vec2 position, const Color& color, bool alive) {

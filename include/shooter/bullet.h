@@ -5,7 +5,6 @@
 #ifndef FINALPROJECT_BULLET_H
 #define FINALPROJECT_BULLET_H
 
-
 #include "cinder/app/App.h"
 #include "pretzel/PretzelGui.h"
 

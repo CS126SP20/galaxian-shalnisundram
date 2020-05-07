@@ -28,12 +28,7 @@ class Enemy {
   void SetEnemyPosition(const vec2& position);
   bool CheckEnemyAlive();
   void KillEnemy();
-
 };
 }
-
-
-
-
 
 #endif  // FINALPROJECT_ENEMY_H

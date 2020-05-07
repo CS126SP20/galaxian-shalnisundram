@@ -40,5 +40,4 @@ std::vector<Enemy>* GameEngine::GetAllEnemies() {
 std::vector<Bullet>* GameEngine::GetAllBullets() {
   return &bullets;
 }
-
 }
