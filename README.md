@@ -2,6 +2,8 @@
 * For my final project, I decided to use the Cinder creative coding package to write a simplified version of 
 Galaxian, the 1979 arcade game.
 
+![Screenshot] (game_image)
+
 # Rules
 * The player must shoot at the "enemies" sliding across the top of the screen using the screen's gun. The player must
 shoot all enemies to win. If this is not done before time runs out, the player loses
