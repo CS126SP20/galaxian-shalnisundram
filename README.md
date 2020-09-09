@@ -1,6 +1,5 @@
-# CS 126 Final Project
-* For my final project, I decided to use the Cinder creative coding package to write a simplified version of 
-Galaxian, the 1979 arcade game.
+# Straight Shooting
+* I'm using the Cinder creative coding package to write a simplified version of Galaxian, the 1979 arcade game.
 
 <img width="1021" alt="game_image" src="https://user-images.githubusercontent.com/55000893/92566779-5ec5b500-f242-11ea-81dd-628ed5fd876a.png">
 
